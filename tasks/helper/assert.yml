@@ -1,0 +1,14 @@
+---
+- name: Assert required OpenStack environment variables are set
+  ansible.builtin.assert:
+    that:
+      - lookup('ansible.builtin.env', item) | length > 0
+    fail_msg: "Required environment variable {{ item }} must be set"
+    success_msg: "Required environment variable {{ item }} is set"
+    quiet: true
+  loop:
+    - OS_AUTH_URL
+    - OS_PASSWORD
+    - OS_USERNAME
+
+
