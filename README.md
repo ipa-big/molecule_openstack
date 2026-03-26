@@ -12,6 +12,7 @@ Openstack and Molecule
 Role Variables
 --------------
 
+molecule.yml (Example)
 ```molecule.yml
 ---
 (...)
