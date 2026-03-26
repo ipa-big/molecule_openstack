@@ -7,7 +7,6 @@ default_ssh_port: 22
 default_ssh_username:
   ansible-dev-centos-7: centos
   ansible-dev-centos-8-stream: centos
-  ansible-dev-centos-8-stream: centos
   ansible-dev-centos-9-stream: cloud-user
   ansible-dev-debian-11: debian
   ansible-dev-debian-12: debian
@@ -20,7 +19,9 @@ default_initial_ssh_wait_timeout: 30
 default_ssh_wait_timeout: 180
 
 ## OPENSTACK:
-# TODO: Take application name if username not set
+os_auth:
+  domain_name: "{{ lookup('env', 'OS_DOMAIN_NAME') | default('ansible-dev', true) }}"
+  project_name: "{{ lookup('env', 'OS_PROJECT_NAME') | default('admin', true) }}"
 os_username: "{{ lookup('env', 'OS_USERNAME') }}"
 os_default_prefix: "ansible-dev-molecule-{{ os_username | split('@') | first | replace('.', '-') }}{{ galaxy_info | default('') }}-"
 os_default_flavor_name: m1.medium
