@@ -36,7 +36,15 @@ No Dependencies
 Example Playbook
 ----------------
 
-create.yml
+requirements.yml
+````yaml
+---
+roles:
+  - name: ipa-big.molecule_openstack
+    version: "1.0.0"
+````
+
+  create.yml
 ````yaml
 ---
 - name: Create
