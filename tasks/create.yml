@@ -1,15 +1,20 @@
 ---
+- name: Assert env vars
+  ansible.builtin.include_tasks: helper/assert.yml
+
 - name: Get galaxy info-based prefix
   ansible.builtin.include_tasks: helper/lookup_galaxy_info.yml
 
 - name: Create network
   openstack.cloud.network:
+    auth: "{{ os_auth }}"
     name: "{{ os_default_int_network_name }}"
     state: present
     external: "false"
 
 - name: Create subnet in network
   openstack.cloud.subnet:
+    auth: "{{ os_auth }}"
     name: "{{ os_default_int_subnet_name }}"
     state: present
     network_name: "{{ os_default_int_network_name }}"
@@ -21,6 +26,7 @@
 
 - name: Create Router
   openstack.cloud.router:
+    auth: "{{ os_auth }}"
     name: "{{ os_default_router_name }}"
     state: present
     network: "{{ os_default_network_name }}"
@@ -34,6 +40,7 @@
 
 - name: Create openstack key pair
   openstack.cloud.keypair:
+    auth: "{{ os_auth }}"
     name: "{{ os_key_pair_name }}"
 #    public_key_file: "{{local_key_pair_path}}{{ local_key_pair_file }}.pub"
 #    public_key: "{{ key_pair_local.public_key }}"
@@ -64,6 +71,7 @@
 
 - name: Collect instance info
   openstack.cloud.server_info:
+    auth: "{{ os_auth }}"
     name: "{{ os_default_prefix }}{{ item.name }}"
   loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
   register: instance_info

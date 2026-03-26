@@ -2,6 +2,7 @@
 # molecule_instance_config might not be present, therefore ignore errors and default to an empty config
 - name: Destroy molecule instance(s)
   openstack.cloud.server:
+    auth: "{{ os_auth }}"
     name: "{{ item.instance_id }}"
     state: absent
     delete_fip: true
@@ -20,6 +21,7 @@
 
 - name: Delete keypair
   openstack.cloud.keypair:
+    auth: "{{ os_auth }}"
     name: "{{ os_key_pair_name }}"
     state: absent
 

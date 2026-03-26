@@ -1,5 +1,6 @@
 - name: "Get Info of '{{ item.name }}' instance"
   openstack.cloud.server_info:
+    auth: "{{ os_auth }}"
     name: "{{ item.name }}"
   register: info_response
   failed_when: false
@@ -7,6 +8,7 @@
 - name: "Create molecule instance '{{ item.name }}'"
   when: info_response.servers | length == 0
   openstack.cloud.server:
+    auth: "{{ os_auth }}"
     state: present
     name: "{{ os_default_prefix }}{{ item.name }}"
     image: "{{ item.image_name }}"
@@ -22,5 +24,3 @@
       owner: "{{ os_username | default('') }}"
       ansible_role: "{{ galaxy_info[1:] | default('') }}"
   register: server
-#  async: 360
-#  poll: 0

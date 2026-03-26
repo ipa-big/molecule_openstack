@@ -1,6 +1,7 @@
 ---
 - name: "Collect instance info of {{ item.name }}"
   openstack.cloud.server_info:
+    auth: "{{ os_auth }}"
     name: "{{ os_default_prefix }}{{ item.name }}"
   register: info
 
