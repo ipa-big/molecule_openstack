@@ -1,6 +1,7 @@
 galaxy_info:
   author: Benjamin Goetz
-#  namespace: ipa
+  namespace: ipa-big
+  role_name: molecule_openstack
   description: Ansible role that creates / destroys VMs via openstack for testing of ansible roles. It is designed to be used in create and destroy phase of molecule tests.
   company: Fraunhofer IPA
 
