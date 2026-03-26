@@ -13,6 +13,8 @@ default_ssh_username:
   ansible-dev-ubuntu-18-04: ubuntu
   ansible-dev-ubuntu-20-04: ubuntu
   ansible-dev-ubuntu-22-04: ubuntu
+  Ubuntu 18.04 64-bit: ubuntu
+  Ubuntu 20.04 64-bit: ubuntu
   Ubuntu 22.04 64-bit: ubuntu
   Ubuntu 24.04 64-bit: ubuntu
 default_initial_ssh_wait_timeout: 30
