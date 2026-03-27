@@ -6,24 +6,24 @@ driver:
 platforms:
   - name: ubuntu2204-1
     image_name: Ubuntu 22.04 64-bit
-#  - name: ubuntu2204-2
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-3
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-4
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-5
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-6
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-7
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-8
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-9
-#    image_name: ansible-dev-ubuntu-22-04
-#  - name: ubuntu2204-10
-#    image_name: ansible-dev-ubuntu-22-04
+  - name: ubuntu2204-2
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-3
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-4
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-5
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-6
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-7
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-8
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-9
+    image_name: Ubuntu 22.04 64-bit
+  - name: ubuntu2204-10
+    image_name: Ubuntu 22.04 64-bit
 provisioner:
   name: ansible
   playbooks:
