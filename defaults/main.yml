@@ -8,6 +8,8 @@ default_ssh_username:
   ansible-dev-centos-7: centos
   ansible-dev-centos-8-stream: centos
   ansible-dev-centos-9-stream: cloud-user
+  CentOS 7 64-bit: centos
+  CentOS 8 64-bit: centos
   ansible-dev-debian-11: debian
   ansible-dev-debian-12: debian
   ansible-dev-ubuntu-18-04: ubuntu
