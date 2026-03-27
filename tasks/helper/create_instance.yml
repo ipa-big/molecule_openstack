@@ -10,6 +10,8 @@
   openstack.cloud.server:
     auth: "{{ os_auth }}"
     state: present
+    auto_ip: true
+    wait: true
     name: "{{ os_default_prefix }}{{ item.name }}"
     image: "{{ item.image_name }}"
     flavor: "{{ item.flavor | default(os_default_flavor_name) }}"
@@ -24,3 +26,5 @@
       owner: "{{ os_username | default('') }}"
       ansible_role: "{{ galaxy_info[1:] | default('') }}"
   register: server
+  async: 45
+  poll: 0
