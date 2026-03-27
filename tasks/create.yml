@@ -22,7 +22,7 @@
     ip_version: 4
     dns_nameservers: 8.8.8.8
 #    host_routes: "{{ item.network.subnet.host_routes | default(omit) }}"
-  loop: "{{ molecule_yml.platforms }}"
+#  loop: "{{ molecule_yml.platforms }}"
 
 - name: Create Router
   openstack.cloud.router:
