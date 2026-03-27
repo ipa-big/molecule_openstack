@@ -1,5 +1,9 @@
 ---
 # molecule_instance_config might not be present, therefore ignore errors and default to an empty config
+- name: List of instances to be deleted
+  debug:
+    var: lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1)
+
 - name: Destroy molecule instance(s)
   openstack.cloud.server:
     auth: "{{ os_auth }}"
