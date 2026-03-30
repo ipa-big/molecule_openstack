@@ -5,22 +5,17 @@ molecule_ephemeral_id: "{{ (lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') | base
 ## SSH:
 default_ssh_port: 22
 default_ssh_username:
-  ansible-dev-centos-7: centos
-  ansible-dev-centos-8-stream: centos
-  ansible-dev-centos-9-stream: cloud-user
   CentOS 7 64-bit: centos
   CentOS 8 64-bit: centos
   CentOS 9 Stream 64-bit: cloud-user
   CentOS 10 Stream 64-bit: cloud-user
-  ansible-dev-debian-11: debian
-  ansible-dev-debian-12: debian
-  ansible-dev-ubuntu-18-04: ubuntu
-  ansible-dev-ubuntu-20-04: ubuntu
-  ansible-dev-ubuntu-22-04: ubuntu
   Ubuntu 18.04 64-bit: ubuntu
   Ubuntu 20.04 64-bit: ubuntu
   Ubuntu 22.04 64-bit: ubuntu
   Ubuntu 24.04 64-bit: ubuntu
+  Debian 11 64-bit: debian
+  Debian 12 64-bit: debian
+  Debian 13 64-bit: debian
 default_initial_ssh_wait_timeout: 30
 default_ssh_wait_timeout: 180
 
