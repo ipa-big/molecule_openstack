@@ -1,0 +1,17 @@
+- name: "Make sure \"{{ local_key_pair_path }}\" exists"
+  ansible.builtin.file:
+    path: "{{ local_key_pair_path }}"
+    state: directory
+
+- name: Generate OpenSSH keypair
+  community.crypto.openssh_keypair:
+    path: "{{ local_key_pair_path }}{{ local_key_pair_file }}"
+  register: key_pair_local
+
+- name: Set OS key pair name
+  ansible.builtin.set_fact:
+    os_key_pair_name: "{{ os_key_pair_suffix }}{{ (key_pair_local.fingerprint | split(':') | last)[0:5] }}"
+
+- name: Print keypair name
+  ansible.builtin.debug:
+    var: os_key_pair_name
