@@ -2,8 +2,7 @@
 # This is an example playbook to execute Ansible tests.
 - name: Verify
   hosts: all
-  gather_facts: true
+  gather_facts: false
   tasks:
-    - name: Example assertion
-      ansible.builtin.assert:
-        that: true
+    - name: Write dummy file
+      ansible.builtin.raw: touch /tmp/dummy
