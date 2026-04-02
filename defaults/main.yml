@@ -33,7 +33,7 @@ os_default_int_network_name: "molecule-test-network"
 os_default_int_subnet_name: "molecule-test-subnet"
 os_default_int_subnet_cidr: "192.168.10.0/24"
 
-os_key_pair_name: "molecule-test-{{ molecule_ephemeral_id }}"
+os_key_pair_suffix: "molecule-test-"
 
 os_security_group_name: ansible-dev-molecule
 os_security_group_description: "Security group for testing Molecule"

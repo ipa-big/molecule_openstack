@@ -34,29 +34,15 @@
       - net: "{{ os_default_int_network_name }}"
         subnet: "{{ os_default_int_subnet_name }}"
 
-- name: Print keypair name
-  ansible.builtin.debug:
-    var: os_key_pair_name
+- name: Create local ssh key pair
+  ansible.builtin.include_tasks: helper/create_local_key_pair.yml
 
 - name: Create openstack key pair
   openstack.cloud.keypair:
     auth: "{{ os_auth }}"
     name: "{{ os_key_pair_name }}"
-#    public_key_file: "{{local_key_pair_path}}{{ local_key_pair_file }}.pub"
-#    public_key: "{{ key_pair_local.public_key }}"
+    public_key_file: "{{local_key_pair_path}}{{ local_key_pair_file }}.pub"
   register: key_pair_response
-
-- name: "Make sure \"{{ local_key_pair_path }}\" exists"
-  ansible.builtin.file:
-    path: "{{ local_key_pair_path }}"
-    state: directory
-
-- name: Persist identity file
-  ansible.builtin.copy:
-    dest: "{{ local_key_pair_path }}{{ local_key_pair_file }}"
-    content: "{{ key_pair_response.keypair.private_key }}"
-    mode: "0600"
-  when: key_pair_response is changed
 
 - debug:
     var: molecule_yml.platforms | flatten(levels=1)
