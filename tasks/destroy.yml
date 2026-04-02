@@ -31,6 +31,9 @@
     auth: "{{ os_auth }}"
     name: "{{ os_key_pair_name }}"
     state: absent
+  register: delete_keypair_response
+  retries: 5
+  until: delete_keypair_response.failed == false
 
 # Mandatory configuration for Molecule to function.
 - name: Populate instance config
