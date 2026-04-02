@@ -6,13 +6,13 @@
   tasks:
     - name: Ensure Molecule roles directory exists
       ansible.builtin.file:
-        path: /tmp/roles/molecule/default/roles
+        path: "{{ playbook_dir }}/roles"
         state: directory
         mode: "0755"
 
     - name: Link molecule_openstack role for Molecule
       ansible.builtin.file:
-        src: /tmp/roles/
-        dest: /tmp/roles/molecule/default/roles/molecule_openstack
+        src: "{{ playbook_dir }}/../../"
+        dest: "{{ playbook_dir }}/roles/molecule_openstack"
         state: link
         force: true
