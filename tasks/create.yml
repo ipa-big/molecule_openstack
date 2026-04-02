@@ -11,6 +11,9 @@
     name: "{{ os_default_int_network_name }}"
     state: present
     external: "false"
+  register: create_network_response
+  retries: 5
+  until: create_network_response.failed == false
 
 - name: Create subnet in network
   openstack.cloud.subnet:
