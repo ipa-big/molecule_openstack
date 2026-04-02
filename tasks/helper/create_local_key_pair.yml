@@ -10,7 +10,7 @@
 
 - name: Set OS key pair name
   ansible.builtin.set_fact:
-    os_key_pair_name: "{{ os_key_pair_suffix }}{{ (key_pair_local.fingerprint | split(':') | last)[0:5] }}"
+    os_key_pair_name: "{{ os_key_pair_suffix }}{{ (key_pair_local.fingerprint | split(':') | last | regex_replace('[^A-Za-z0-9]', ''))[0:5] }}"
 
 - name: Print keypair name
   ansible.builtin.debug:
