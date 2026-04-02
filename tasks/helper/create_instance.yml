@@ -1,7 +1,11 @@
+- name: Set Server Name
+  ansible.builtin.set_fact:
+    server_name: "{{ os_default_prefix }}{{ item.name }}"
+
 - name: "Get Info of '{{ item.name }}' instance"
   openstack.cloud.server_info:
     auth: "{{ os_auth }}"
-    name: "{{ item.name }}"
+    name: "{{ server_name }}"
   register: info_response
   failed_when: false
 
@@ -12,7 +16,7 @@
     state: present
     auto_ip: true
     wait: true
-    name: "{{ os_default_prefix }}{{ item.name }}"
+    name: "{{ server_name }}"
     image: "{{ item.image_name }}"
     flavor: "{{ item.flavor | default(os_default_flavor_name) }}"
     security_groups:
