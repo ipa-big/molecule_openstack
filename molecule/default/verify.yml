@@ -1,5 +1,22 @@
 ---
 # This is an example playbook to execute Ansible tests.
+- name: Verify from local
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - apt:
+        name: iputils-ping
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: Ping every host from inventory via Ansible connection
+      ansible.builtin.command: "ping -c 1 {{ hostvars[item].ansible_host }}"
+      loop: "{{ groups['all'] | default([]) | difference(['localhost', '127.0.0.1']) }}"
+      loop_control:
+        label: "{{ item }}"
+
 - name: Verify
   hosts: all
   gather_facts: false
