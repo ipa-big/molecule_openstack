@@ -43,27 +43,49 @@
 
 - name: "Create molecule instance '{{ item.name }}'"
   when: info_response.servers | length == 0
-  openstack.cloud.resource:
+  openstack.cloud.server:
     auth: "{{ os_auth }}"
-    service: compute
-    type: server
-    attributes:
-      name: "{{ server_name }}"
-      image_id: "{{ image_id }}"
-      flavor_id: "{{ flavor_id }}"
-      key_name: "{{ os_key_pair_name }}"
-      networks:
-        - uuid: "{{ int_network_id }}"
-      metadata:
-        instance: "{{ item.name }}"
-        ssh_user: "{{ item.ssh_user | default(default_ssh_username[item.image_name]) }}"
-        owner: "{{ os_username | default('') }}"
-        ansible_role: "{{ galaxy_info[1:] | default('') }}"
+    state: present
+    auto_ip: false
+    wait: true
+    name: "{{ server_name }}"
+    image: "{{ item.image_name }}"
+    flavor: "{{ item.flavor | default(os_default_flavor_name) }}"
+    security_groups:
+      - default
+    key_name: "{{ os_key_pair_name }}"
+    network: "{{ item.network | default(os_default_int_network_name) }}"
+    floating_ip_pools: "{{ item.fip_pool | default(omit) }}"
+    meta:
+      instance: "{{ item.name }}"
+      ssh_user: "{{ item.ssh_user | default(default_ssh_username[item.image_name]) }}"
+      owner: "{{ os_username | default('') }}"
+      ansible_role: "{{ galaxy_info[1:] | default('') }}"
+#  openstack.cloud.resource:
+#    auth: "{{ os_auth }}"
+#    service: compute
+#    type: server
+#    attributes:
+#      name: "{{ server_name }}"
+#      image_id: "{{ image_id }}"
+#      flavor_id: "{{ flavor_id }}"
+#      key_name: "{{ os_key_pair_name }}"
+#      networks:
+#        - uuid: "{{ int_network_id }}"
+#      metadata:
+#        instance: "{{ item.name }}"
+#        ssh_user: "{{ item.ssh_user | default(default_ssh_username[item.image_name]) }}"
+#        owner: "{{ os_username | default('') }}"
+#        ansible_role: "{{ galaxy_info[1:] | default('') }}"
   register: server
+
+- debug:
+    var: server
 
 - name: Set Server ID fact
   ansible.builtin.set_fact:
-    server_id: "{{ server.resource.id | default(info_response.servers[0].id) }}"
+    server_id: "{{ server.server.id | default(info_response.servers[0].id) }}"
+#    server_id: "{{ server.resource.id | default(info_response.servers[0].id) }}"
 
 - name: Attach floating IP to server
   openstack.cloud.floating_ip:
