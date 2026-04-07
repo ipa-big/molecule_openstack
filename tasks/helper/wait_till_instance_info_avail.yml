@@ -4,6 +4,8 @@
     auth: "{{ os_auth }}"
     name: "{{ os_default_prefix }}{{ item.name }}"
   register: info
+  retries: 5
+  until: info is not failed
 
 - name: Redo till instance info available
   when:  (info.servers | length == 0) or (info.servers[-1].access_ipv4 | length == 0)
