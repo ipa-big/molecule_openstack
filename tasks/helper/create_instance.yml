@@ -73,6 +73,7 @@
     network: "{{ os_default_network_name }}"
     wait: yes
     reuse: yes
+    timeout: 30
   register: floating_ip_response
   retries: 5
   until: floating_ip_response is not failed
