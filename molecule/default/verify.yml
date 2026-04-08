@@ -62,3 +62,6 @@
   tasks:
     - name: Write dummy file
       ansible.builtin.raw: touch /tmp/dummy
+      register: touch_response
+      retries: 5
+      until: touch_response.rc == 0
