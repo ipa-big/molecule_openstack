@@ -5,7 +5,9 @@
   connection: local
   gather_facts: false
   tasks:
-    - apt:
+
+    - name: Ensure iputils-ping is present
+      ansible.builtin.apt:
         name: iputils-ping
         state: present
         update_cache: yes
@@ -17,45 +19,54 @@
       loop_control:
         label: "{{ item }}"
 
-    - name: Set local key pair path and file
-      ansible.builtin.set_fact:
-        local_key_pair_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/"
-        local_key_pair_file: "ssh_key"
-        os_key_pair_suffix: "molecule-test-"
-        os_auth:
-          domain_name: "{{ lookup('env', 'OS_DOMAIN_NAME') | default('ansible-dev', true) }}"
-          project_name: "{{ lookup('env', 'OS_PROJECT_NAME') | default('admin', true) }}"
+    - name: Verify Keys
+      block:
+      - name: Set local key pair path and file
+        ansible.builtin.set_fact:
+          local_key_pair_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/"
+          local_key_pair_file: "ssh_key"
+          os_key_pair_suffix: "molecule-test-"
+          os_auth:
+            domain_name: "{{ lookup('env', 'OS_DOMAIN_NAME') | default('ansible-dev', true) }}"
+            project_name: "{{ lookup('env', 'OS_PROJECT_NAME') | default('admin', true) }}"
 
-    - name: Generate OpenSSH keypair
-      community.crypto.openssh_keypair:
-        path: "{{ local_key_pair_path }}{{ local_key_pair_file }}"
-      register: key_pair_local
+      - name: Generate OpenSSH keypair
+        community.crypto.openssh_keypair:
+          path: "{{ local_key_pair_path }}{{ local_key_pair_file }}"
+        register: key_pair_local
 
-    - name: Set OS key pair name
-      ansible.builtin.set_fact:
-        os_key_pair_name: "{{ os_key_pair_suffix }}{{ (key_pair_local.fingerprint | split(':') | last | regex_replace('[^A-Za-z0-9]', ''))[0:5] }}"
+      - name: Set OS key pair name
+        ansible.builtin.set_fact:
+          os_key_pair_name: "{{ os_key_pair_suffix }}{{ (key_pair_local.fingerprint | split(':') | last | regex_replace('[^A-Za-z0-9]', ''))[0:5] }}"
 
-    - name: Lookup lookup local file
-      ansible.builtin.set_fact:
-        local_pub_key: "{{ lookup('file', local_key_pair_path+local_key_pair_file+'.pub') }}"
+      - name: Lookup lookup local file
+        ansible.builtin.set_fact:
+          local_pub_key: "{{ lookup('file', local_key_pair_path+local_key_pair_file+'.pub') }}"
 
-    - name: Get information about keypairs using optional parameters
-      openstack.cloud.keypair_info:
-        auth: "{{ os_auth }}"
-        name: "{{ os_key_pair_name }}"
-      register: key_pair_info_response
+      - name: Get information about keypairs using optional parameters
+        openstack.cloud.keypair_info:
+          auth: "{{ os_auth }}"
+          name: "{{ os_key_pair_name }}"
+        register: key_pair_info_response
 
-    - name: Save remote public key to variable
-      ansible.builtin.set_fact:
-        remote_pub_key: "{{ key_pair_info_response.keypairs[0].public_key | trim }}"
+      - name: Save remote public key to variable
+        ansible.builtin.set_fact:
+          remote_pub_key: "{{ key_pair_info_response.keypairs[0].public_key | trim }}"
 
-    - name: Assert that local and remote public keys are the same
-      ansible.builtin.assert:
-        that:
-          - local_pub_key == remote_pub_key
-        fail_msg: "The local and remote public keys do not match."
-        success_msg: "The local and remote public keys match successfully."
+      - name: Assert that local and remote public keys are the same
+        ansible.builtin.assert:
+          that:
+            - local_pub_key == remote_pub_key
+          fail_msg: "The local and remote public keys do not match."
+          success_msg: "The local and remote public keys match successfully."
 
+    - name: Check if SSH port is available on each host
+      ansible.builtin.wait_for:
+        host: "{{ hostvars[item].ansible_host }}"
+        port: 22
+        timeout: 300
+      loop: "{{ groups['all'] | default([]) | difference(['localhost', '127.0.0.1']) }}"
+      
 - name: Verify
   hosts: all
   gather_facts: false

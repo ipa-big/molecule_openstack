@@ -65,6 +65,27 @@
   loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
   register: instance_info
 
+- name: Attach floating IP to instance
+  loop: "{{ instance_info.results }}"
+  openstack.cloud.floating_ip:
+    auth: "{{ os_auth }}"
+    state: present
+    server: "{{ item.servers[0].id }}"
+    network: "{{ os_default_network_name }}"
+    wait: yes
+    reuse: yes
+    timeout: 30
+  register: floating_ip_response
+  retries: 5
+  until: floating_ip_response is not failed
+
+- name: Collect instance info
+  openstack.cloud.server_info:
+    auth: "{{ os_auth }}"
+    name: "{{ os_default_prefix }}{{ item.name }}"
+  loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
+  register: instance_info
+
 - name: Flatten instance_info
   ansible.builtin.set_fact:
     server_info: "{{ server_info | default([]) + item.servers }}"
