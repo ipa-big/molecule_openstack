@@ -19,6 +19,7 @@
   async_status:
     jid: "{{ item.ansible_job_id }}"
   register: os_jobs
+  ignore_errors: true
   until: os_jobs.finished
   retries: 300
   loop: "{{ server.results | flatten(levels=1) }}"
