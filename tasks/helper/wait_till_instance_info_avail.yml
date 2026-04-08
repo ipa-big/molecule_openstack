@@ -8,5 +8,5 @@
   until: info is not failed
 
 - name: Redo till instance info available
-  when:  (info.servers | length == 0) or (info.servers[-1].access_ipv4 | length == 0)
+  when:  info.servers | length == 0
   ansible.builtin.include_tasks: helper/wait_till_instance_info_avail.yml
