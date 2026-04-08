@@ -79,9 +79,6 @@
 #        ansible_role: "{{ galaxy_info[1:] | default('') }}"
   register: server
 
-- debug:
-    var: server
-
 - name: Set Server ID fact
   ansible.builtin.set_fact:
     server_id: "{{ server.server.id | default(info_response.servers[0].id) }}"
