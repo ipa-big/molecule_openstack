@@ -1,7 +1,7 @@
 ---
 # molecule_instance_config might not be present, therefore ignore errors and default to an empty config
 - name: List of instances to be deleted
-  debug:
+  ansible.builtin.debug:
     var: lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1)
 
 - name: Destroy molecule instance(s)
@@ -12,23 +12,6 @@
     OS_PROJECT_NAME: "{{ os_auth.project_name }}"
     OS_DOMAIN_NAME: "{{ os_auth.domain_name }}"
   loop: "{{ lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1) }}"
-  # openstack.cloud.server:
-  #   auth: "{{ os_auth }}"
-  #   name: "{{ item.instance_id }}"
-  #   state: absent
-  #   delete_fip: true
-  # register: server
-  # async: 7200
-  # poll: 0
-
-# - name: Wait for instance(s) deletion to complete
-#   async_status:
-#     jid: "{{ item.ansible_job_id }}"
-#   register: os_jobs
-#   ignore_errors: true
-#   until: os_jobs.finished
-#   retries: 300
-#   loop: "{{ server.results | flatten(levels=1) }}"
 
 - name: Create local ssh key pair
   ansible.builtin.include_tasks: helper/create_local_key_pair.yml
