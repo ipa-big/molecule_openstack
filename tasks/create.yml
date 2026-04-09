@@ -65,7 +65,21 @@
   loop: "{{ molecule_yml.platforms | flatten(levels=1) }}"
   register: instance_info
 
-- name: Attach floating IP to instance
+- name: Attach floating IP to instance (first attempt)
+  loop: "{{ instance_info.results }}"
+  openstack.cloud.floating_ip:
+    auth: "{{ os_auth }}"
+    state: present
+    server: "{{ item.servers[0].id }}"
+    network: "{{ os_default_network_name }}"
+    wait: yes
+    reuse: yes
+    timeout: 30
+  register: floating_ip_response
+  retries: 5
+  until: floating_ip_response is not failed
+
+- name: Attach floating IP to instance (second attempt)
   loop: "{{ instance_info.results }}"
   openstack.cloud.floating_ip:
     auth: "{{ os_auth }}"
