@@ -3,7 +3,9 @@
 To import the role into Ansible Galaxy for the first time, you can use the following command:
 
 ```bash
-ansible-galaxy role import --token <your-galaxy-token> --branch main --role-name molecule_openstack <your-github-username> molecule_openstack
+export AG_TOKEN=...
+export AG_USER=....
+ansible-galaxy role import --token $AG_TOKEN --branch main --role-name molecule_openstack $AG_USER molecule_openstack
 ```
 
 ## Galaxy Delete
@@ -11,7 +13,9 @@ ansible-galaxy role import --token <your-galaxy-token> --branch main --role-name
 ### Role
 
 ````shell
-ansible-galaxy role delete --token <your-galaxy-token> <your-github-username> molecule_openstack
+export AG_TOKEN=...
+export AG_USER=....
+ansible-galaxy role delete --token $AG_TOKEN $AG_USER molecule_openstack
 ````
 
 ## Galaxy Token
