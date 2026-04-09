@@ -1,15 +1,21 @@
 ---
 - name: Create floating IP
   when: item.servers[0].access_ipv4 | length == 0
-  ansible.builtin.command:
+  ansible.builtin.shell:
     cmd: >
       openstack floating ip create {{ os_default_network_name }} -f json
+  environment:
+    OS_PROJECT_NAME: "{{ os_auth.project_name }}"
+    OS_DOMAIN_NAME: "{{ os_auth.domain_name }}"
   register: floating_ip_response
   changed_when: true
 
 - name: Attach floating IP to instance
   when: item.servers[0].access_ipv4 | length == 0
-  ansible.builtin.command:
+  ansible.builtin.shell:
     cmd: >
       openstack server add floating ip {{ item.servers[0].id }} {{ (floating_ip_response.stdout | from_json).id  }}
+  environment:
+    OS_PROJECT_NAME: "{{ os_auth.project_name }}"
+    OS_DOMAIN_NAME: "{{ os_auth.domain_name }}"
   changed_when: true
