@@ -9,38 +9,6 @@
   register: info_response
   failed_when: false
 
-# - name: Get image by name
-#   openstack.cloud.image_info:
-#     auth: "{{ os_auth }}"
-#     filters:
-#       name: "{{ item.image_name }}"
-#   register: image_info
-
-# - name: Get flavor by name
-#   openstack.cloud.compute_flavor_info:
-#     auth: "{{ os_auth }}"
-#     name: "{{ item.flavor | default(os_default_flavor_name, true) }}"
-#   register: flavor_info
-
-# - name: Get int network by name
-#   openstack.cloud.networks_info:
-#     auth: "{{ os_auth }}"
-#     name: "{{ item.int_network | default(os_default_int_network_name, true) }}"
-#   register: int_network_info
-
-# - name: Get ext network by name
-#   openstack.cloud.networks_info:
-#     auth: "{{ os_auth }}"
-#     name: "{{ item.ext_network | default(os_default_network_name, true) }}"
-#   register: ext_network_info
-
-# - name: Set Openstack Resource IDs
-#   ansible.builtin.set_fact:
-#     image_id: "{{ image_info.images[0].id }}"
-#     flavor_id: "{{ flavor_info.flavors[0].id }}"
-#     int_network_id: "{{ int_network_info.networks[0].id }}"
-#     ext_network_id: "{{ ext_network_info.networks[0].subnet_ids[0] }}"
-
 - name: "Create molecule instance '{{ item.name }}'"
   when: info_response.servers | length == 0
   openstack.cloud.server:
@@ -61,40 +29,6 @@
       ssh_user: "{{ item.ssh_user | default(default_ssh_username[item.image_name]) }}"
       owner: "{{ os_username | default('') }}"
       ansible_role: "{{ galaxy_info[1:] | default('') }}"
-#  openstack.cloud.resource:
-#    auth: "{{ os_auth }}"
-#    service: compute
-#    type: server
-#    attributes:
-#      name: "{{ server_name }}"
-#      image_id: "{{ image_id }}"
-#      flavor_id: "{{ flavor_id }}"
-#      key_name: "{{ os_key_pair_name }}"
-#      networks:
-#        - uuid: "{{ int_network_id }}"
-#      metadata:
-#        instance: "{{ item.name }}"
-#        ssh_user: "{{ item.ssh_user | default(default_ssh_username[item.image_name]) }}"
-#        owner: "{{ os_username | default('') }}"
-#        ansible_role: "{{ galaxy_info[1:] | default('') }}"
   register: server
   async: 7200
   poll: 0
-
-# - name: Set Server ID fact
-#   ansible.builtin.set_fact:
-#     server_id: "{{ server.server.id | default(info_response.servers[0].id) }}"
-# #    server_id: "{{ server.resource.id | default(info_response.servers[0].id) }}"
-
-# - name: Attach floating IP to server
-#   openstack.cloud.floating_ip:
-#     auth: "{{ os_auth }}"
-#     state: present
-#     server: "{{ server_id }}"
-#     network: "{{ os_default_network_name }}"
-#     wait: yes
-#     reuse: yes
-#     timeout: 30
-#   register: floating_ip_response
-#   retries: 5
-#   until: floating_ip_response is not failed
