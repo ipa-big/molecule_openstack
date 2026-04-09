@@ -19,3 +19,12 @@
     OS_PROJECT_NAME: "{{ os_auth.project_name }}"
     OS_DOMAIN_NAME: "{{ os_auth.domain_name }}"
   changed_when: true
+
+- name: Collect instance info
+  when: item.servers[0].access_ipv4 | length == 0
+  openstack.cloud.server_info:
+    auth: "{{ os_auth }}"
+    name: "{{ item.servers[0].id }}"
+  register: info
+  retries: 10
+  until: info.servers[0].access_ipv4 | length > 0
