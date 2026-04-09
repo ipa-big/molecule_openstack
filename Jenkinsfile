@@ -19,14 +19,23 @@ for (p in platforms) {
     parallel_stages[platform] = {
         docker
             .image("${MOLECULE_DOCKER_IMAGE}")
-            .inside("-e OS_AUTH_URL=${OS_AUTH_URL} -e OS_USERNAME=${OS_APPLICATION_CREDENTIAL_ID} -e OS_PASSWORD=${OS_APPLICATION_CREDENTIAL_SECRET} -u root") {
+            .inside("--name ${JOB_NAME}_${platform} -e OS_AUTH_URL=${OS_AUTH_URL} -e OS_USERNAME=${OS_APPLICATION_CREDENTIAL_ID} -e OS_PASSWORD=${OS_APPLICATION_CREDENTIAL_SECRET} -u root") {
 
             stage("Prepare node") {
+                sh "rm -r ~/.ansible/roles/ipa-big.molecule_openstack"
                 sh "ansible-playbook molecule/default/prepare.yml"
             }
 
-            stage("Molecule Test") {
-                sh "molecule -vv test -p ${platform}"
+            stage("Molecule Converge") {
+                sh "molecule -vv converge -s ${platform}"
+            }
+
+            stage("Molecule Verify") {
+                sh "molecule -vv verify -s ${platform}" //  || (echo 'sleep for 300s' && sleep 300)
+            }
+
+            stage("Molecule Destroy") {
+                sh "molecule -vv destroy -s ${platform}"
             }
         }
     }
