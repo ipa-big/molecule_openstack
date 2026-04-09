@@ -27,15 +27,15 @@ for (p in platforms) {
             }
 
             stage("Molecule Converge") {
-                sh "molecule -vv converge -s ${platform}"
+                sh "molecule -vv converge -s ${platform} --report"
             }
 
             stage("Molecule Verify") {
-                sh "molecule -vv verify -s ${platform}" //  || (echo 'sleep for 300s' && sleep 300)
+                sh "molecule -vv verify -s ${platform} --report"
             }
 
             stage("Molecule Destroy") {
-                sh "molecule -vv destroy -s ${platform}"
+                sh "molecule -vv destroy -s ${platform} --report"
             }
         }
     }
