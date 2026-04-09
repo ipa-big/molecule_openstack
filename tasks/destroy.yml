@@ -12,6 +12,12 @@
     OS_PROJECT_NAME: "{{ os_auth.project_name }}"
     OS_DOMAIN_NAME: "{{ os_auth.domain_name }}"
   loop: "{{ lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1) }}"
+  register: delete_instance_response
+  retries: 10
+  failed_when: 
+    - delete_instance_response.rc != 0
+    - '"No Server found" not in delete_instance_response.stderr'
+  until: delete_instance_response.rc == 0
 
 - name: Create local ssh key pair
   ansible.builtin.include_tasks: helper/create_local_key_pair.yml
