@@ -5,24 +5,30 @@
     var: lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1)
 
 - name: Destroy molecule instance(s)
-  openstack.cloud.server:
-    auth: "{{ os_auth }}"
-    name: "{{ item.instance_id }}"
-    state: absent
-    delete_fip: true
-  register: server
+  ansible.builtin.shell: 
+    cmd: >
+      openstack server delete --wait {{ item.instance_id }}
+  environment:
+    OS_PROJECT_NAME: "{{ os_auth.project_name }}"
+    OS_DOMAIN_NAME: "{{ os_auth.domain_name }}"
   loop: "{{ lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1) }}"
-  async: 7200
-  poll: 0
+  # openstack.cloud.server:
+  #   auth: "{{ os_auth }}"
+  #   name: "{{ item.instance_id }}"
+  #   state: absent
+  #   delete_fip: true
+  # register: server
+  # async: 7200
+  # poll: 0
 
-- name: Wait for instance(s) deletion to complete
-  async_status:
-    jid: "{{ item.ansible_job_id }}"
-  register: os_jobs
-  ignore_errors: true
-  until: os_jobs.finished
-  retries: 300
-  loop: "{{ server.results | flatten(levels=1) }}"
+# - name: Wait for instance(s) deletion to complete
+#   async_status:
+#     jid: "{{ item.ansible_job_id }}"
+#   register: os_jobs
+#   ignore_errors: true
+#   until: os_jobs.finished
+#   retries: 300
+#   loop: "{{ server.results | flatten(levels=1) }}"
 
 - name: Create local ssh key pair
   ansible.builtin.include_tasks: helper/create_local_key_pair.yml
@@ -38,11 +44,11 @@
 
 # Mandatory configuration for Molecule to function.
 - name: Populate instance config
-  set_fact:
+  ansible.builtin.set_fact:
     instance_conf: {}
 
 - name: Dump instance config
-  copy:
+  ansible.builtin.copy:
     content: "{{ instance_conf | to_json | from_json | to_yaml }}"
     dest: "{{ molecule_instance_config }}"
-  when: server.changed | bool
+  # when: server.changed | bool
