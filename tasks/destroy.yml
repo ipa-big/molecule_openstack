@@ -4,6 +4,21 @@
   ansible.builtin.debug:
     var: lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1)
 
+- name: Remove floating IP
+  ansible.builtin.shell: 
+    cmd: >
+      openstack floating ip delete {{ item.address }}
+  environment:
+    OS_PROJECT_NAME: "{{ os_auth.project_name }}"
+    OS_DOMAIN_NAME: "{{ os_auth.domain_name }}"
+  loop: "{{ lookup('file', molecule_instance_config, errors='ignore') | default([], true) | from_yaml | flatten(levels=1) }}"
+  register: delete_floating_ip_response
+  retries: 10
+  failed_when: 
+    - delete_floating_ip_response.rc != 0
+    - '"No FloatingIP found" not in delete_floating_ip_response.stderr'
+  until: delete_floating_ip_response.rc == 0
+
 - name: Destroy molecule instance(s)
   ansible.builtin.shell: 
     cmd: >
