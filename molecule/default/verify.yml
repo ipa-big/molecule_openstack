@@ -23,8 +23,8 @@
       block:
       - name: Set local key pair path and file
         ansible.builtin.set_fact:
-          local_key_pair_path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/"
-          local_key_pair_file: "ssh_key"
+          local_key_pair_path: "~/.ssh/"
+          local_key_pair_file: "molecule_ssh_key"
           os_key_pair_suffix: "molecule-test-"
           os_auth:
             domain_name: "{{ lookup('env', 'OS_DOMAIN_NAME') | default('ansible-dev', true) }}"
