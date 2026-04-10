@@ -40,11 +40,16 @@
 - name: Create local ssh key pair
   ansible.builtin.include_tasks: helper/create_local_key_pair.yml
 
+- name: Get stat of local public key
+  ansible.builtin.stat:
+    path: "{{ local_key_pair_path }}{{ local_key_pair_file }}.pub"
+  register: stat_local_public_key
+
 - name: Create openstack key pair
   openstack.cloud.keypair:
     auth: "{{ os_auth }}"
     name: "{{ os_key_pair_name }}"
-    public_key_file: "{{local_key_pair_path}}{{ local_key_pair_file }}.pub"
+    public_key_file: "{{ stat_local_public_key.stat.path }}"
   register: key_pair_response
 
 - ansible.builtin.debug:
