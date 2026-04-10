@@ -26,15 +26,15 @@ for (p in platforms) {
                 sh "ansible-playbook molecule/default/prepare.yml"
             }
 
-            stage("Molecule Converge") {
+            stage("Converge") {
                 sh "molecule -vv converge -s ${platform} --report"
             }
 
-            stage("Molecule Verify") {
+            stage("Verify") {
                 sh "molecule -vv verify -s ${platform} --report"
             }
 
-            stage("Molecule Destroy") {
+            stage("Destroy") {
                 sh "molecule -vv destroy -s ${platform} --report"
             }
         }
