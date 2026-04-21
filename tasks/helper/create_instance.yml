@@ -9,6 +9,15 @@
   register: info_response
   failed_when: false
 
+- name: Set Default for ssh username
+  ansible.builtin.set_fact:
+    _default_ssh_username: "{{ username.value }}"
+  loop: "{{ lookup('ansible.builtin.dict', default_ssh_username) }}"
+  loop_control:
+    loop_var: username
+    label: "{{ username.key }}"
+  when: username.key in item.image_name
+
 - name: "Create molecule instance '{{ item.name }}'"
   when: info_response.servers | length == 0
   openstack.cloud.server:
@@ -26,7 +35,7 @@
     floating_ip_pools: "{{ item.fip_pool | default(omit) }}"
     meta:
       instance: "{{ item.name }}"
-      ssh_user: "{{ item.ssh_user | default(default_ssh_username[item.image_name]) }}"
+      ssh_user: "{{ item.ssh_user | default(_default_ssh_username) }}"
       owner: "{{ os_username | default('') }}"
       ansible_role: "{{ galaxy_info[1:] | default('') }}"
   register: server

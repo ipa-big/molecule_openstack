@@ -5,17 +5,17 @@ molecule_ephemeral_id: "{{ (lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') | base
 ## SSH:
 default_ssh_port: 22
 default_ssh_username:
-  CentOS 7 64-bit: centos
-  CentOS 8 64-bit: centos
-  CentOS 9 Stream 64-bit: cloud-user
-  CentOS 10 Stream 64-bit: cloud-user
-  Ubuntu 18.04 64-bit: ubuntu
-  Ubuntu 20.04 64-bit: ubuntu
-  Ubuntu 22.04 64-bit: ubuntu
-  Ubuntu 24.04 64-bit: ubuntu
-  Debian 11 64-bit: debian
-  Debian 12 64-bit: debian
-  Debian 13 64-bit: debian
+  CentOS 7: centos
+  CentOS 8: centos
+  CentOS 9: cloud-user
+  CentOS 10: cloud-user
+  Ubuntu 18: ubuntu
+  Ubuntu 20: ubuntu
+  Ubuntu 22: ubuntu
+  Ubuntu 24: ubuntu
+  Debian 11: debian
+  Debian 12: debian
+  Debian 13: debian
 default_initial_ssh_wait_timeout: 30
 default_ssh_wait_timeout: 180
 
