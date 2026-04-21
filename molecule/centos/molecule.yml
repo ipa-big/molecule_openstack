@@ -5,13 +5,14 @@ driver:
   name: default
 platforms:
   - name: centos7
-    image_name: CentOS 7 64-bit
+    image_name: CentOS 7 64-bit (Ansible)
   - name: centos8
-    image_name: CentOS 8 64-bit
+    image_name: CentOS 8 64-bit (Ansible)
   - name: centos9
     image_name: CentOS 9 Stream 64-bit
   - name: centos10
     image_name: CentOS 10 Stream 64-bit
+
 provisioner:
   name: ansible
   playbooks:

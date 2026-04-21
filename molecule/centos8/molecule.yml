@@ -5,7 +5,8 @@ driver:
   name: default
 platforms:
   - name: centos8
-    image_name: CentOS 8 64-bit
+    image_name: CentOS 8 64-bit (Ansible)
+
 provisioner:
   name: ansible
   playbooks:
